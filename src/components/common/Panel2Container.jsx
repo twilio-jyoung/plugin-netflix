@@ -10,6 +10,8 @@ import { Button } from "@twilio-paste/core/button";
 import SegmentLogo from "../../images/segment.png";
 import InformationOutput from "../common/InformationOutput";
 
+// this is going to get chopped into a million components, but just trying to put everything together first.
+
 const md5 = require("md5");
 
 const customStyles = {
