@@ -1,0 +1,22 @@
+{
+	"name": "plugin-netflix",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {
+		"postinstall": "flex-plugin pre-script-check"
+	},
+	"dependencies": {
+		"@twilio-paste/core": "^10.17.0",
+		"@twilio-paste/icons": "^5.8.1",
+		"flex-plugin-scripts": "4.2.2",
+		"md5": "^2.3.0",
+		"moment": "^2.29.1",
+		"prop-types": "^15.7.2",
+		"react": "^17.0.2",
+		"react-dom": "^17.0.2"
+	},
+	"devDependencies": {
+		"@twilio/flex-ui": "2.0.0-alpha.10",
+		"react-test-renderer": "^17.0.0"
+	}
+}
