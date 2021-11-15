@@ -24,7 +24,12 @@ export default class NetflixPlugin extends FlexPlugin {
 
 		flex.AgentDesktopView.Panel2.Content.remove("container");
 		flex.AgentDesktopView.Panel2.Content.add(
-			<Panel2Container key="tabs" theme={manager.configuration.theme} />
+			<Panel2Container
+				key="tabs"
+				theme={manager.configuration.theme}
+				flex={flex}
+				manager={manager}
+			/>
 		);
 
 		// this.registerReducers(manager);

@@ -16,6 +16,11 @@ const RefundTrigger = (props) => {
 	const [isOpen, setIsOpen] = React.useState(false);
 	const handleOpen = () => setIsOpen(true);
 	const handleClose = () => setIsOpen(false);
+	const handleRefund = () => {
+		// send refund email
+
+		handleClose();
+	};
 	const modalHeadingID = useUID();
 
 	return (
@@ -45,7 +50,7 @@ const RefundTrigger = (props) => {
 						<Button variant="secondary" onClick={handleClose}>
 							Cancel
 						</Button>
-						<Button variant="primary" onClick={handleClose}>
+						<Button variant="primary" onClick={handleRefund}>
 							Refund
 						</Button>
 					</ModalFooterActions>

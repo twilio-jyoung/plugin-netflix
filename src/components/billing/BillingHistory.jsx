@@ -83,8 +83,6 @@ function roundToTwo(num) {
 }
 
 function generateRow(date, sub, tax, tot) {
-	console.log(date.format("MMMM"));
-
 	let devicesActive = Math.floor(Math.random() * 10) + 1;
 	let hoursActive = (Math.floor(Math.random() * 240) + 1) * devicesActive;
 	let titlesPlayed = Math.floor(hoursActive / 50);

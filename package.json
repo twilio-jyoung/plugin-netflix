@@ -6,14 +6,22 @@
 		"postinstall": "flex-plugin pre-script-check"
 	},
 	"dependencies": {
+		"@emotion/react": "^11.6.0",
+		"@emotion/styled": "^11.6.0",
+		"@mui/icons-material": "^5.1.0",
+		"@mui/material": "^5.1.0",
 		"@twilio-paste/core": "^10.17.0",
 		"@twilio-paste/icons": "^5.8.1",
+		"file-loader": "^6.2.0",
 		"flex-plugin-scripts": "4.2.2",
+		"google-maps-react": "^2.0.6",
 		"md5": "^2.3.0",
 		"moment": "^2.29.1",
 		"prop-types": "^15.7.2",
 		"react": "^17.0.2",
-		"react-dom": "^17.0.2"
+		"react-dom": "^17.0.2",
+		"react-event-timeline": "^1.6.3",
+		"twilio-sync": "^3.0.5"
 	},
 	"devDependencies": {
 		"@twilio/flex-ui": "2.0.0-alpha.10",

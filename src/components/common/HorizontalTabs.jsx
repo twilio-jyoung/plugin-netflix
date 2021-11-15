@@ -5,29 +5,32 @@ import {
 	TabPanels,
 	TabPanel,
 } from "@twilio-paste/core/tabs";
-import { useUID } from "@twilio-paste/core/uid-library";
 import BillingHistory from "../billing/BillingHistory";
+import { withTaskContext } from "@twilio/flex-ui";
+import DevicePage from "../devices/DevicePage";
 
-const HorizontalTabs = () => {
-	const selectedId = useUID();
+const HorizontalTabs = (props) => {
+	// set tab based on intent
+	const selectedId = props.task.attributes.conversations.content;
+
 	return (
 		<Tabs selectedId={selectedId} baseId="horizontal-tabs-example">
 			<TabList aria-label="My tabs">
-				<Tab id={selectedId}>Billing History</Tab>
-				<Tab>Devices</Tab>
-				<Tab>Technical Support</Tab>
-				<Tab>Account Management</Tab>
+				<Tab id="billing">Billing History</Tab>
+				{/* <Tab id="account">Account Management</Tab> */}
+				{/* <Tab id="devices">Devices</Tab> */}
+				<Tab id="support">Technical Support</Tab>
 			</TabList>
 			<TabPanels paddingTop="space20">
 				<TabPanel>
 					<BillingHistory key="billing-history" />
 				</TabPanel>
-				<TabPanel>Tab 2</TabPanel>
-				<TabPanel>Tab 3</TabPanel>
-				<TabPanel>Tab 4</TabPanel>
+				<TabPanel>
+					<DevicePage key="map" />
+				</TabPanel>
 			</TabPanels>
 		</Tabs>
 	);
 };
 
-export default HorizontalTabs;
+export default withTaskContext(HorizontalTabs);
