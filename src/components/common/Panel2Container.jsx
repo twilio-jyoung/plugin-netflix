@@ -20,7 +20,7 @@ const customStyles = {
 		position: "relative",
 		backgroundSize: "cover",
 		backgroundColor: "#fff",
-		// minHeight: "100%",
+		minHeight: "100vh",
 		padding: "20px",
 	},
 	gridContainer: {
