@@ -37,11 +37,8 @@ class EventStream extends React.Component {
 
   componentDidUpdate(prevProps) {
     // This is to highlight how updating based on task change works
-    console.log('prevProps', prevProps)
-    console.log('current props', this.props)
     if (prevProps.task.sid !== this.props.task.sid) {
       //fetch list items for new task
-      console.log('updating event list')
       this.loadFormData()
     }
   }

@@ -1,5 +1,6 @@
 import React from 'react'
 import { useUID } from '@twilio-paste/core/uid-library'
+import { Actions } from '@twilio/flex-ui'
 import {
   Modal,
   ModalHeader,
@@ -18,7 +19,10 @@ const RefundTrigger = (props) => {
   const handleClose = () => setIsOpen(false)
   const handleRefund = () => {
     // send refund email
-
+    Actions.invokeAction('SendMessage', {
+      body: 'Your refund for $' + props.refundAmount + ' has been processed.',
+      conversationSid: props.conversationSid,
+    })
     handleClose()
   }
   const modalHeadingID = useUID()

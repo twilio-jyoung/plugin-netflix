@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { withTaskContext } from '@twilio/flex-ui'
 import { Table, THead, Tr, Th, Td, TBody } from '@twilio-paste/core/table'
 import RefundTrigger from './RefundTrigger'
@@ -7,7 +7,7 @@ import { CheckboxCheckIcon } from '@twilio-paste/icons/esm/CheckboxCheckIcon'
 var moment = require('moment')
 
 const BillingHistory = (props) => {
-  let rate = 0
+  const { channelSid } = props.task.attributes
   let traits = props.task.attributes?.segment_data?.traits
   if (!traits?.planLevel) {
     traits = {
@@ -16,43 +16,48 @@ const BillingHistory = (props) => {
     }
   }
 
-  switch (traits.planLevel) {
-    case 'basic':
-      rate = 8.99
-      break
-    case 'standard':
-      rate = 13.99
-      break
-    case 'premium':
-      rate = 17.99
-      break
-  }
-
-  let taxRate = 0.0825
-  let taxTotal = roundToTwo(rate * taxRate)
-  let total = rate + taxTotal
-
-  let today = moment(Date.now())
-  let startDate = moment(traits.createdAt)
-
-  let diff = today.diff(startDate, 'months')
-
-  let tableRows = []
-
-  if (diff == 0) {
-    tableRows.push(generateRow(today, rate, taxTotal, total))
-  } else {
-    for (let index = 0; index < Math.min(diff, 18); index++) {
-      tableRows.push(
-        generateRow(
-          moment(Date.now()).subtract(index, 'months'),
-          rate,
-          taxTotal,
-          total,
-        ),
-      )
+  const tableRows = useMemo(() => {
+    let rate = 6.99
+    switch (traits.planLevel.toLowerCase()) {
+      case 'basic':
+        rate = 8.99
+        break
+      case 'standard':
+        rate = 13.99
+        break
+      case 'premium':
+        rate = 17.99
+        break
     }
-  }
+
+    let taxRate = 0.0825
+    let taxTotal = roundToTwo(rate * taxRate)
+    let total = rate + taxTotal
+
+    let today = moment(Date.now())
+    let startDate = moment(traits.createdAt)
+
+    let diff = today.diff(startDate, 'months')
+
+    let tableRows = []
+
+    if (diff == 0) {
+      tableRows.push(generateRow(today, rate, taxTotal, total, channelSid))
+    } else {
+      for (let index = 0; index < Math.min(diff, 18); index++) {
+        tableRows.push(
+          generateRow(
+            moment(Date.now()).subtract(index, 'months'),
+            rate,
+            taxTotal,
+            total,
+            channelSid,
+          ),
+        )
+      }
+    }
+    return tableRows
+  }, [traits])
 
   return (
     <Table tableLayout="fixed" variant="default" striped>
@@ -80,7 +85,7 @@ function roundToTwo(num) {
   return +(Math.round(num + 'e+2') + 'e-2')
 }
 
-function generateRow(date, sub, tax, tot) {
+function generateRow(date, sub, tax, tot, channelSid) {
   let devicesActive = Math.floor(Math.random() * 10) + 1
   let hoursActive = (Math.floor(Math.random() * 240) + 1) * devicesActive
   let titlesPlayed = Math.floor(hoursActive / 50)
@@ -102,7 +107,7 @@ function generateRow(date, sub, tax, tot) {
       <Td>{hoursActive}</Td>
       <Td>{titlesPlayed}</Td>
       <Td>
-        <RefundTrigger refundAmount={tot} />
+        <RefundTrigger refundAmount={tot} conversationSid={channelSid} />
       </Td>
     </Tr>
   )

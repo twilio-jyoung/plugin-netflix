@@ -1,9 +1,10 @@
 {
   "name": "plugin-netflix",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "private": true,
   "scripts": {
-    "postinstall": "flex-plugin pre-script-check"
+    "postinstall": "flex-plugin pre-script-check",
+    "lint": "prettier --write 'src/**/*.{ts,tsx,js,json,jsx}' & eslint --fix 'src/**/*.{ts,tsx,js,json,jsx}' --cache"
   },
   "dependencies": {
     "@emotion/react": "^11.6.0",
