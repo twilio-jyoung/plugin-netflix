@@ -1,5 +1,5 @@
-import * as FlexPlugin from 'flex-plugin';
+import * as FlexPlugin from 'flex-plugin'
 
-import NetflixPlugin from './NetflixPlugin';
+import NetflixPlugin from './NetflixPlugin'
 
-FlexPlugin.loadPlugin(NetflixPlugin);
+FlexPlugin.loadPlugin(NetflixPlugin)

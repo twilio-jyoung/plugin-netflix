@@ -1,0 +1,450 @@
+{
+  "sid": "",
+  "accountSid": "",
+  "friendlyName": "Netflix Flow - Digital",
+  "definition": {
+    "states": [
+      {
+        "transitions": [
+          {
+            "event": "incomingMessage",
+            "next": "set_variables_sms"
+          },
+          {
+            "event": "incomingCall"
+          },
+          {
+            "event": "incomingRequest"
+          }
+        ],
+        "type": "trigger",
+        "name": "Trigger",
+        "properties": {
+          "offset": {
+            "y": -340,
+            "x": -350
+          }
+        }
+      },
+      {
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "type": "send-to-flex",
+        "name": "send_to_flex_digital",
+        "properties": {
+          "attributes": "{\n   \"name\":\"{{widgets.customer_lookup.parsed.traits.name}}\",\n\"from\": \"{{flow.variables.phone}}\",\n   \"skillsNeeded\":[\n      \"{{flow.variables.intent}}\"\n   ],\n   \"channelType\":\"{{trigger.message.ChannelAttributes.channel_type}}\",\n   \"channelSid\":\"{{trigger.message.ChannelSid}}\",\n   \"customers\":{\n      \"external_id\":\"{{widgets.customer_lookup.parsed.traits.id}}\",\n      \"name\":\"{{widgets.customer_lookup.parsed.traits.name}}\",\n      \"category\":\"{{widgets.customer_lookup.parsed.traits.planLevel}}\",\n      \"phone\":\"{{widgets.customer_lookup.parsed.traits.phone}}\",\n      \"email\":\"{{widgets.customer_lookup.parsed.traits.email}}\",\n      \"customer_attribute_1\":\"{{widgets.customer_lookup.parsed.traits.memberSince}}\"\n   },\n   \"conversations\":{\n      \"content\":\"{{flow.variables.intent}}\"\n   },\n   \"segment_data\":{{widgets.customer_lookup.parsed | to_json}}\n}",
+          "workflow": "Assign Task",
+          "channel": "Programmable Chat",
+          "offset": {
+            "y": 1850,
+            "x": -150
+          }
+        }
+      },
+      {
+        "transitions": [
+          {
+            "event": "success",
+            "next": "send_message_1"
+          },
+          {
+            "event": "fail"
+          }
+        ],
+        "type": "run-function",
+        "name": "customer_lookup",
+        "properties": {
+          "parameters": [
+            {
+              "key": "phone",
+              "value": "{{flow.variables.phone}}"
+            }
+          ],
+          "url": "/getSegmentTraitsByPhoneNumber",
+          "environment_sid": "dev-environment",
+          "offset": {
+            "y": 10,
+            "x": -290
+          },
+          "function_sid": "/getSegmentTraitsByPhoneNumber",
+          "service_sid": "netflix-demo"
+        }
+      },
+      {
+        "transitions": [
+          {
+            "event": "next",
+            "next": "customer_lookup"
+          }
+        ],
+        "type": "set-variables",
+        "name": "set_variables_sms",
+        "properties": {
+          "variables": [
+            {
+              "key": "phone",
+              "value": "{{trigger.message.ChannelAttributes.from}}"
+            },
+            {
+              "key": "channel",
+              "value": "messaging"
+            },
+            {
+              "key": "bot_name",
+              "value": "netflix bot"
+            }
+          ],
+          "offset": {
+            "y": -200,
+            "x": -320
+          }
+        }
+      },
+      {
+        "transitions": [
+          {
+            "event": "sessionEnded",
+            "next": "autopilot_split"
+          },
+          {
+            "event": "failure"
+          },
+          {
+            "event": "timeout"
+          }
+        ],
+        "type": "send-to-auto-pilot",
+        "name": "send_to_autopilot",
+        "properties": {
+          "body": "{{trigger.message.Body}}",
+          "from": "{{flow.variables.bot_name}}",
+          "chat_service": "{{trigger.message.InstanceSid}}",
+          "target_task": "",
+          "timeout": 14400,
+          "offset": {
+            "y": 1110,
+            "x": -470
+          },
+          "memory_parameters": [
+            {
+              "key": "name",
+              "value": "{{widgets.customer_lookup.parsed.firstName}} {{widgets.customer_lookup.parsed.lastName}}"
+            }
+          ],
+          "chat_channel": "{{trigger.message.ChannelSid}}",
+          "autopilot_assistant_sid": "Netflix"
+        }
+      },
+      {
+        "transitions": [
+          {
+            "event": "noMatch"
+          },
+          {
+            "conditions": [
+              {
+                "type": "equal_to",
+                "friendly_name": "support",
+                "arguments": [
+                  "{{widgets.send_to_autopilot.CurrentTask}}"
+                ],
+                "value": "talk_to_support"
+              }
+            ],
+            "event": "match",
+            "next": "set_intent_support"
+          },
+          {
+            "conditions": [
+              {
+                "type": "equal_to",
+                "friendly_name": "billing",
+                "arguments": [
+                  "{{widgets.send_to_autopilot.CurrentTask}}"
+                ],
+                "value": "talk_to_billing"
+              }
+            ],
+            "event": "match",
+            "next": "set_intent_billing"
+          },
+          {
+            "conditions": [
+              {
+                "type": "equal_to",
+                "friendly_name": "password_reset",
+                "arguments": [
+                  "{{widgets.send_to_autopilot.CurrentTask}}"
+                ],
+                "value": "password_reset"
+              }
+            ],
+            "event": "match",
+            "next": "set_intent_password_reset"
+          }
+        ],
+        "type": "split-based-on",
+        "name": "autopilot_split",
+        "properties": {
+          "input": "{{widgets.send_to_autopilot.CurrentTask}}",
+          "offset": {
+            "y": 1340,
+            "x": -110
+          }
+        }
+      },
+      {
+        "transitions": [
+          {
+            "event": "next",
+            "next": "send_to_flex_digital"
+          }
+        ],
+        "type": "set-variables",
+        "name": "set_intent_billing",
+        "properties": {
+          "variables": [
+            {
+              "key": "intent",
+              "value": "billing"
+            }
+          ],
+          "offset": {
+            "y": 1570,
+            "x": 100
+          }
+        }
+      },
+      {
+        "transitions": [
+          {
+            "event": "next",
+            "next": "send_to_flex_digital"
+          }
+        ],
+        "type": "set-variables",
+        "name": "set_intent_support",
+        "properties": {
+          "variables": [
+            {
+              "key": "intent",
+              "value": "support"
+            }
+          ],
+          "offset": {
+            "y": 1570,
+            "x": -220
+          }
+        }
+      },
+      {
+        "transitions": [
+          {
+            "event": "next",
+            "next": "send_password_reset_email"
+          }
+        ],
+        "type": "set-variables",
+        "name": "set_intent_password_reset",
+        "properties": {
+          "variables": [
+            {
+              "key": "intent",
+              "value": "password_reset"
+            }
+          ],
+          "offset": {
+            "y": 1570,
+            "x": 420
+          }
+        }
+      },
+      {
+        "transitions": [
+          {
+            "event": "sent"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "type": "send-message",
+        "name": "pwr_digital",
+        "properties": {
+          "body": "We sent you an email with a password reset link.  Please click the link and follow the steps to reset your password.",
+          "from": "{{flow.variables.bot_name}}",
+          "service": "{{trigger.message.InstanceSid}}",
+          "to": "{{contact.channel.address}}",
+          "offset": {
+            "y": 2060,
+            "x": 450
+          },
+          "channel": "{{trigger.message.ChannelSid}}"
+        }
+      },
+      {
+        "transitions": [
+          {
+            "event": "sent",
+            "next": "password_errors"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "type": "send-message",
+        "name": "send_message_1",
+        "properties": {
+          "body": "Thanks for contacting Netflix {{widgets.customer_lookup.parsed.traits.firstName | capitalize}}!",
+          "from": "{{flow.variables.bot_name}}",
+          "service": "{{trigger.message.InstanceSid}}",
+          "to": "{{contact.channel.address}}",
+          "offset": {
+            "y": 220,
+            "x": -250
+          },
+          "channel": "{{trigger.message.ChannelSid}}"
+        }
+      },
+      {
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "send_to_autopilot"
+          },
+          {
+            "conditions": [
+              {
+                "type": "greater_than",
+                "friendly_name": "> 2 pasword errors",
+                "arguments": [
+                  "{{widgets.customer_lookup.parsed.traits.sign_in_errors_today}}"
+                ],
+                "value": "0"
+              }
+            ],
+            "event": "match",
+            "next": "pwr_confirm_messaging"
+          }
+        ],
+        "type": "split-based-on",
+        "name": "password_errors",
+        "properties": {
+          "input": "{{widgets.customer_lookup.parsed.traits.sign_in_errors_today}}",
+          "offset": {
+            "y": 430,
+            "x": -220
+          }
+        }
+      },
+      {
+        "transitions": [
+          {
+            "event": "incomingMessage",
+            "next": "Copy_of_pwr_confirm"
+          },
+          {
+            "event": "timeout"
+          },
+          {
+            "event": "deliveryFailure"
+          }
+        ],
+        "type": "send-and-wait-for-reply",
+        "name": "pwr_confirm_messaging",
+        "properties": {
+          "body": "It looks like you've been having some recent issues with your password.  Do you need to reset it?",
+          "from": "{{flow.channel.address}}",
+          "service": "{{trigger.message.InstanceSid}}",
+          "timeout": "3600",
+          "offset": {
+            "y": 640,
+            "x": -40
+          },
+          "channel": "{{trigger.message.ChannelSid}}"
+        }
+      },
+      {
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "send_to_autopilot"
+          },
+          {
+            "conditions": [
+              {
+                "type": "matches_any_of",
+                "friendly_name": "yes",
+                "arguments": [
+                  "{{widgets.pwr_confirm_messaging.inbound.Body}}"
+                ],
+                "value": "yes, yep, yeah, yes please, yes i would like that"
+              }
+            ],
+            "event": "match",
+            "next": "set_intent_password_reset"
+          }
+        ],
+        "type": "split-based-on",
+        "name": "Copy_of_pwr_confirm",
+        "properties": {
+          "input": "{{widgets.pwr_confirm_messaging.inbound.Body}}",
+          "offset": {
+            "y": 910,
+            "x": 50
+          }
+        }
+      },
+      {
+        "transitions": [
+          {
+            "event": "success",
+            "next": "pwr_digital"
+          },
+          {
+            "event": "fail"
+          }
+        ],
+        "type": "run-function",
+        "name": "send_password_reset_email",
+        "properties": {
+          "parameters": [
+            {
+              "key": "name",
+              "value": "{{widgets.customer_lookup.parsed.traits.name | capitalize}}"
+            },
+            {
+              "key": "email",
+              "value": "{{widgets.customer_lookup.parsed.traits.email}}"
+            }
+          ],
+          "url": "/sendPasswordResetEmail",
+          "environment_sid": "dev-environment",
+          "offset": {
+            "y": 1820,
+            "x": 490
+          },
+          "function_sid": "/sendPasswordResetEmail",
+          "service_sid": "netflix-demo"
+        }
+      }
+    ],
+    "initial_state": "Trigger",
+    "flags": {
+      "allow_concurrent_calls": true
+    },
+    "description": "Netflix Flow - Digital"
+  },
+  "valid": true,
+  "errors": [],
+  "warnings": []
+}

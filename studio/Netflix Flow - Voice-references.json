@@ -1,0 +1,51 @@
+{
+  "accountSid": "",
+  "accountName": "",
+  "revision": "",
+  "flowSid": "",
+  "references": {
+    "subflow": [],
+    "taskRouter": {
+      "workflows": [
+        {
+          "friendlyName": "Assign Task",
+          "sid": ""
+        }
+      ],
+      "channels": [
+        {
+          "friendlyName": "Voice",
+          "sid": ""
+        }
+      ]
+    },
+    "serverless": [
+      {
+        "sid": "",
+        "uniqueName": "netflix-demo",
+        "friendlyName": "netflix-demo",
+        "environmentSid": "",
+        "baseUrl": "",
+        "functions": [
+          {
+            "sid": "",
+            "friendlyName": "/getSegmentTraitsByPhoneNumber"
+          },
+          {
+            "sid": "",
+            "friendlyName": "/sendPasswordResetEmail"
+          }
+        ],
+        "environmentUniqueName": "dev-environment"
+      }
+    ],
+    "autopilot": [
+      {
+        "friendlyName": "Connect people to different departments in a company",
+        "uniqueName": "Netflix",
+        "sid": ""
+      }
+    ],
+    "httpCallouts": []
+  }
+}
