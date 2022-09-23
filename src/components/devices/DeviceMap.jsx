@@ -32,8 +32,9 @@ class DeviceMap extends React.Component {
 
     this.state = {
       bounds: mapBounds,
-      locations: pins,
+      locations: pins
     }
+    
   }
 
   displayMarkers = () => {
@@ -52,7 +53,6 @@ class DeviceMap extends React.Component {
             lat: loc.coordinates.lat,
             lng: loc.coordinates.lng,
           }}
-          onClick={this.onMarkerClick}
         />
       )
     })

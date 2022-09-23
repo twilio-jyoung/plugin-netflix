@@ -21,8 +21,8 @@ const ProfileComponent = (props) => {
   }
   const computed_traits = props.task.attributes?.segment_data?.computed_traits
   if (!computed_traits?.last_title) {
-    traits.last_title = 'Kill Bill'
-    traits.favorite_title = 'Arcane'
+    traits.last_title = 'n/a'
+    traits.favorite_title = 'n/a'
   }
   const {
     email,
@@ -33,7 +33,10 @@ const ProfileComponent = (props) => {
     last_title,
     favorite_title,
   } = traits
-  let gravatarUrl = `https://www.gravatar.com/avatar/${md5(email)}?s=100`
+
+  let defaultLogo = encodeURI(`https://cinereous-mallard-4959.twil.io/assets/default-avatar.png`);
+
+  let gravatarUrl = `https://www.gravatar.com/avatar/${md5(email)}?s=100&d=${defaultLogo}`
 
   return (
     <Card padding="space70">

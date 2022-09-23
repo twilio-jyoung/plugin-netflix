@@ -11,27 +11,38 @@ import {
 } from '@twilio-paste/core/modal'
 import { Button } from '@twilio-paste/core/button'
 import { Paragraph } from '@twilio-paste/core/paragraph'
+import { CheckmarkCircleIcon } from "@twilio-paste/icons/esm/CheckmarkCircleIcon";
 
 const RefundTrigger = (props) => {
   // Modal properties
-  const [isOpen, setIsOpen] = React.useState(false)
-  const handleOpen = () => setIsOpen(true)
-  const handleClose = () => setIsOpen(false)
+  const [isOpen, setIsOpen] = React.useState(false);
+	const [refunded, setRefunded] = React.useState(false);
+  const handleOpen = () => setIsOpen(true);
+  const handleClose = () => setIsOpen(false);
   const handleRefund = () => {
     // send refund email
     Actions.invokeAction('SendMessage', {
       body: 'Your refund for $' + props.refundAmount + ' has been processed.',
       conversationSid: props.conversationSid,
-    })
-    handleClose()
+    });
+		setRefunded(true);
+    handleClose();
   }
-  const modalHeadingID = useUID()
+  const modalHeadingID = useUID();
+	
 
   return (
     <div>
-      <Button onClick={handleOpen} variant="destructive_link">
-        Refund
-      </Button>
+			{!refunded && 
+			      <Button onClick={handleOpen} variant="destructive_link">
+						Refund
+					</Button>
+			}
+			{refunded && 
+				<React.Fragment>
+					Refunded
+				</React.Fragment>
+			}
       <Modal
         ariaLabelledby={modalHeadingID}
         isOpen={isOpen}
